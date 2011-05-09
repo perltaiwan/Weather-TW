@@ -11,7 +11,7 @@ use Carp;
 
 our $VERSION = '0.01';
 
-my %cities = {
+my %cities_zh = (
   '台北市'      => '36_01_data.htm',
   '新北市'      => '36_04_data.htm',
   '台中市'      => '36_08_data.htm',
@@ -33,8 +33,8 @@ my %cities = {
   '澎湖'        => '36_20_data.htm',
   '金門'        => '36_21_data.htm',
   '馬祖'        => '36_22_data.htm',
-};
-my %cities_en = {
+);
+my %cities_en = (
   'Changhua' => '36_09_data.htm',
   'Chiayi' => '36_12_data.htm',
   'Hengchun Peninsula' => '36_16_data.htm',
@@ -54,10 +54,10 @@ my %cities_en = {
   'Taipei City' => '36_01_data.htm',
   'Taitung' => '36_19_data.htm',
   'Taoyuan' => '36_05_data.htm',
-  'Yulan' => '36_17_data.htm',
+  'Yilan' => '36_17_data.htm',
   'Yunlin' => '36_11_data.htm',
-};
-my $url = "http://www.cwb.gov.tw/V6/forecast/taiwan/";
+);
+my $url_zh = "http://www.cwb.gov.tw/V6/forecast/taiwan/";
 my $url_en = "http://www.cwb.gov.tw/eng/forecast/taiwan/";
 
 # Preloaded methods go here.
@@ -73,14 +73,6 @@ Weather::TW - Fetch Taiwan weather data from 中央氣象局
   use Weather::TW;
   my $weather = new Weather::TW;
 
-=cut
-
-sub new {
-  my $class = shift;
-  my $self = {@_};
-  bless $self, $class;
-  return $self;
-};
 
 =head1 DESCRIPTION
 
@@ -90,11 +82,77 @@ unedited.
 
 Blah blah blah.
 
-=head2 EXPORT
+=head1 METHODS
 
-None by default.
+=item C<<new>>
+Create a new C<Weather::TW> object.
+=cut
 
+sub new {
+  my $class = shift;
+  my $self = {@_};
+  bless $self, $class;
+  return $self;
+};
 
+=item C<<city('$city_name')>>
+City name can be either Chinese or English. The returned value is C<$self> so you can use it for cascading.
+    $xmlstr = $weather->city('Taipei City')->to_XML;
+The available city names are:
+    台北市       Taipei City
+    新北市       New Taipei City
+    台中市       Taichung City
+    台南市       Tainan City
+    高雄市       Kaohsiung City
+    基隆北海岸   Keelung North Coast
+    桃園         Taoyuan
+    新竹         Hsinchu
+    苗栗         Miaoli
+    彰化         Changhua
+    南投         Nantou
+    雲林         Yunlin
+    嘉義         Chiayi
+    屏東         Pingtung
+    恆春半島     Hengchun Peninsula
+    宜蘭         Yilan
+    花蓮         Hualien
+    台東         Taitung
+    澎湖         Penghu
+    金門         Kinmen
+    馬祖         Matsu
+=cut
+
+sub city {
+  my $self = shift;
+  my $city_name = shift;
+  my $city = $cities_en{$city_name};
+  $city = $cities_zh{$city_name} unless $city;
+  $city ? $self->_fetch($url_en.$city) : $self->_reset;
+  return $self;
+}
+
+sub _fetch{
+}
+sub _reset{
+}
+
+=item C<<cities_zh>>
+Return Chinese city names
+    @names = $weather->cities_zh;
+=cut
+sub cities_zh {
+  my $self = shift;
+  return %cities_zh;
+}
+
+=item C<<cities_en>>
+Return Chinese city names
+    @names = $weather->cities_en;
+=cut
+sub cities_en {
+  my $self = shift;
+  return %cities_en;
+}
 
 =head1 SEE ALSO
 
