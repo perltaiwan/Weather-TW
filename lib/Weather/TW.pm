@@ -10,7 +10,7 @@ use XML::Smart;
 use utf8;
 use Carp;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 my %area_zh = (
   '台北市'      => '36_01_data.htm',
@@ -73,15 +73,22 @@ Weather::TW - Fetch Taiwan weather data from 中央氣象局
 
   use Weather::TW;
   my $weather = new Weather::TW;
+  my $xml = $weather->area('Taipei')->xml;
+  # currently only xml is supported
 
+  foreach my $area ($weather->area_en){
+    my $xml = $weather->area($area)->xml
+    print $xml;
+  }
+
+  use utf8;
+  $xml = $weather->area('台北市')->xml;
+  # Chinese also works!
 
 =head1 DESCRIPTION
 
-Stub documentation for Weather::TW, created by h2xs. It looks like the
-author of the extension was negligent enough to leave the stub
-unedited.
-
-Blah blah blah.
+This module parse data from L<http://www.cwb.gov.tw/> (中央氣象局), and generates xml data. 
+In future it may support json and other formats as well.
 
 =head1 METHODS
 
@@ -164,18 +171,12 @@ sub xml{
 
 =head1 SEE ALSO
 
-Mention other useful documentation such as the documentation of
-related modules or operating system documentation (such as man pages
-in UNIX), or any relevant external documentation such as RFCs or
-standards.
-
-If you have a mailing list set up for your module, mention it here.
-
-If you have a web site set up for your module, mention it here.
+L<https://github.com/dryman/Weather-TW>
+L<XML::Smart>
 
 =head1 AUTHOR
 
-dryman, E<lt>dryman@apple.comE<gt>
+dryman, E<lt>idryman@gmail.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
