@@ -95,10 +95,10 @@ sub new {
   return $self;
 }
 
-=item C<<city('$area_name')>>
+=item C<<area('$area_name')>>
 City name can be either Chinese or English. The returned value is C<$self> so you can use it for cascading.
     $xmlstr = $weather->area('Taipei City')->to_XML;
-The available city names are:
+The available area names are:
     台北市       Taipei City
     新北市       New Taipei City
     台中市       Taichung City
@@ -128,17 +128,10 @@ sub area {
   my $area = $area_en{$area_name};
   $area = $area_zh{$area_name} unless $area;
   croak "Unknown area $area_name\n" unless $area;
-  $area ? $self->_fetch($url_en.$area) : $self->_reset;
+  $self->_fetch($url_en.$area);
   return $self;
 }
 
-sub _fetch{
-  my $self = shift;
-  my $url = shift;
-}
-
-sub _reset{
-}
 
 =item C<<area_zh>>
 Return area names in Chinese.
@@ -183,5 +176,21 @@ at your option, any later version of Perl 5 you may have available.
 
 
 =cut
+
+sub _fetch{
+  my $self = shift;
+  my $url = shift;
+  my $mech = new WWW::Mechanize;
+  my $tree = new HTML::TreeBuilder;
+
+  $mech->get($url);
+  croak "Cannot fetch url $url\n" unless $mech->success;
+  croak "Content is empty in $url\n" unless $mech->content;
+  $tree->parse($mech->content) and $tree->eof;
+
+  my @topTags = 
+    map {tr/ ,/_/d}
+    map {lc $_->as_text} $tree->find_by_attribute('class','CenterTitle');
+}
 1;
 __END__
