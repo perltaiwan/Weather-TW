@@ -93,7 +93,7 @@ sub new {
   my $self = {@_};
   bless $self, $class;
   return $self;
-};
+}
 
 =item C<<city('$area_name')>>
 City name can be either Chinese or English. The returned value is C<$self> so you can use it for cascading.
@@ -127,14 +127,16 @@ sub area {
   my $area_name = shift;
   my $area = $area_en{$area_name};
   $area = $area_zh{$area_name} unless $area;
-  croak "Unknown area $area_name!\n" unless $area;
+  croak "Unknown area $area_name\n" unless $area;
   $area ? $self->_fetch($url_en.$area) : $self->_reset;
   return $self;
 }
 
 sub _fetch{
   my $self = shift;
+  my $url = shift;
 }
+
 sub _reset{
 }
 

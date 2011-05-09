@@ -5,7 +5,8 @@
 
 # change 'tests => 1' to 'tests => last_test_to_print';
 
-use Test::More tests => 3;
+use Test::More tests => 4;
+use utf8;
 use lib 'lib';
 BEGIN { 
   use_ok('Weather::TW');
@@ -14,6 +15,9 @@ BEGIN {
 
 my $w = new Weather::TW;
 can_ok $w, qw(area_zh area_en area _fetch _reset);
+eval {$w->area('abcd')};
+ok $@, "expect croak when using wrong area name\n";
+
 
 
 #########################
