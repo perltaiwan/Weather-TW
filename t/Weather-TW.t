@@ -13,7 +13,7 @@ BEGIN {
 };
 
 my $w = new Weather::TW;
-can_ok $w, qw(cities_zh cities_en city);
+can_ok $w, qw(area_zh area_en area _fetch _reset);
 
 
 #########################

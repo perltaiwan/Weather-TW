@@ -11,7 +11,7 @@ use Carp;
 
 our $VERSION = '0.01';
 
-my %cities_zh = (
+my %area_zh = (
   '台北市'      => '36_01_data.htm',
   '新北市'      => '36_04_data.htm',
   '台中市'      => '36_08_data.htm',
@@ -34,7 +34,7 @@ my %cities_zh = (
   '金門'        => '36_21_data.htm',
   '馬祖'        => '36_22_data.htm',
 );
-my %cities_en = (
+my %area_en = (
   'Changhua' => '36_09_data.htm',
   'Chiayi' => '36_12_data.htm',
   'Hengchun Peninsula' => '36_16_data.htm',
@@ -95,9 +95,9 @@ sub new {
   return $self;
 };
 
-=item C<<city('$city_name')>>
+=item C<<city('$area_name')>>
 City name can be either Chinese or English. The returned value is C<$self> so you can use it for cascading.
-    $xmlstr = $weather->city('Taipei City')->to_XML;
+    $xmlstr = $weather->area('Taipei City')->to_XML;
 The available city names are:
     台北市       Taipei City
     新北市       New Taipei City
@@ -122,36 +122,38 @@ The available city names are:
     馬祖         Matsu
 =cut
 
-sub city {
+sub area {
   my $self = shift;
-  my $city_name = shift;
-  my $city = $cities_en{$city_name};
-  $city = $cities_zh{$city_name} unless $city;
-  $city ? $self->_fetch($url_en.$city) : $self->_reset;
+  my $area_name = shift;
+  my $area = $area_en{$area_name};
+  $area = $area_zh{$area_name} unless $area;
+  croak "Unknown area $area_name!\n" unless $area;
+  $area ? $self->_fetch($url_en.$area) : $self->_reset;
   return $self;
 }
 
 sub _fetch{
+  my $self = shift;
 }
 sub _reset{
 }
 
-=item C<<cities_zh>>
-Return Chinese city names
-    @names = $weather->cities_zh;
+=item C<<area_zh>>
+Return area names in Chinese.
+    @names = $weather->area_zh;
 =cut
-sub cities_zh {
+sub area_zh {
   my $self = shift;
-  return %cities_zh;
+  return %area_zh;
 }
 
-=item C<<cities_en>>
-Return Chinese city names
-    @names = $weather->cities_en;
+=item C<<area_en>>
+Return area names in English.
+    @names = $weather->area_en;
 =cut
-sub cities_en {
+sub area_en {
   my $self = shift;
-  return %cities_en;
+  return %area_en;
 }
 
 =head1 SEE ALSO
