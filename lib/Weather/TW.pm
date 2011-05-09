@@ -11,7 +11,6 @@ use Carp;
 
 our $VERSION = '0.01';
 
-my @tags=qw(short_forecasts seven_day_frecasts monthly_mean rising_time);
 my %area_zh = (
   '台北市'      => '36_01_data.htm',
   '新北市'      => '36_04_data.htm',
@@ -193,6 +192,11 @@ sub _fetch{
   my @tables = $tree->find_by_attribute('class','datatable');
   $hash{short_forecasts} = [{forecast => $self->_short_forecasts(shift @tables)}];
   $hash{seven_day_forecasts} = [{area => $self->_seven_day_forecasts(shift @tables)}];
+  if (scalar @tables == 3){
+    my @areas = $self->_seven_day_forecasts(shift @tables);
+    push @{$hash{seven_day_forecasts}[0]{area}},@areas;
+  }
+
   #need to push blah.. into area => arr_ref;
   $self->{data}=\%hash;
 }
