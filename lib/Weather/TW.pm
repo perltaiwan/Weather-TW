@@ -227,14 +227,27 @@ sub _seven_day_forecasts{
   shift @dates;
 
   foreach my $tr (@trs){
-    my %area;
-    my $img;
-    my @arr = map{$_->as_text}$tr->find('th');
-    $area{name}=$arr[0];
-    my @children = $tr->content_list;
-  }
-  1;
+    my %area=();
+    my @forecasts=();
+    my @ths = map{$_->as_text}$tr->find('th');
+    $area{name}=$ths[0];
+    my @tds = $tr->find('td');
+    croak "There should be seven days in a weak!" unless 7 == scalar @tds;
 
+    foreach my $i (0..6){
+      my @imgs = $tds[$i]->find('img');
+      my $img = shift @imgs;
+      push @forecasts, {
+        date => $dates[$i],
+        weather => $img->attr('title'),
+        temp => $tds[$i]->as_text,
+      };
+    }
+    $area{forecast}=\@forecasts;
+    push @areas,\%area;
+  }
+  return \@areas;
 }
+
 1;
 __END__
