@@ -6,6 +6,7 @@ use warnings;
 use WWW::Mechanize;
 use HTML::TreeBuilder;
 use HTML::Element;
+use XML::Smart;
 use utf8;
 use Carp;
 
@@ -151,6 +152,16 @@ sub area_en {
   return %area_en;
 }
 
+=item C<<xml>>
+Return data as xml
+=cut
+sub xml{
+  my $self = shift;
+  my $XML = XML::Smart->new;
+  $XML->{$_}=$self->{data}{$_} for qw(short_forecasts seven_day_forecasts monthly_mean rising_time);
+  return $XML->data;
+}
+
 =head1 SEE ALSO
 
 Mention other useful documentation such as the documentation of
@@ -197,8 +208,26 @@ sub _fetch{
     my $ref = $hash{seven_day_forecasts}[0]{area};
     push @{$ref},@{$areas};
   }
+  $hash{monthly_mean} = $self->_monthly_mean(shift @tables);
+  $hash{rising_time} = $self->_rising_time(shift @tables);
 
   $self->{data}=\%hash;
+}
+
+sub _monthly_mean{
+  my ($self,$table)=@_;
+  my @ths = $table->find('th');
+  my $th = shift @ths;
+  my %hash;
+  @hash{qw(month max_temp min_temp rain_mm)}=
+    ($th->as_text, map {$_->as_text} $table->find('td'));
+  return \%hash;
+}
+sub _rising_time{
+  my ($self,$table)=@_;
+  my %hash;
+  @hash{qw(sunrise sunset moonrise roonset)}= map{$_->as_text} $table->find('td');
+  return \%hash;
 }
 
 sub _short_forecasts {

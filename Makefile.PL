@@ -9,6 +9,7 @@ WriteMakefile(
       'WWW::Mechanize' => 0,
       'HTML::TreeBuilder' => 0,
       'HTML::Element' => 0,
+      'XML::Smart' => 0,
     }, 
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/Weather/TW.pm', # retrieve abstract from module
