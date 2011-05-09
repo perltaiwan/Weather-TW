@@ -5,7 +5,7 @@
 
 # change 'tests => 1' to 'tests => last_test_to_print';
 
-use Test::More tests => 9;
+use Test::More tests => 10;
 use utf8;
 use lib 'lib';
 BEGIN { 
@@ -23,6 +23,7 @@ $arr = $w->{data}{seven_day_forecasts}[0]{area};
 isnt scalar @{$arr}, 1, "number of Taipei areas is more than 1";
 
 ok $w->xml, "xml ok";
+ok $w->json, "json ok";
 
 ok $w->area('馬祖'), "Chinese name";
 $arr = $w->{data}{seven_day_forecasts}[0]{area};

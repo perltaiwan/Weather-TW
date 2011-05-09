@@ -7,10 +7,11 @@ use WWW::Mechanize;
 use HTML::TreeBuilder;
 use HTML::Element;
 use XML::Smart;
+use JSON;
 use utf8;
 use Carp;
 
-our $VERSION = '0.021';
+our $VERSION = '0.023';
 
 my %area_zh = (
   '台北市'      => '36_01_data.htm',
@@ -178,14 +179,24 @@ sub area_en {
 
 Return data as xml
 
-=back
-
 =cut
 sub xml{
   my $self = shift;
   my $XML = XML::Smart->new;
   $XML->{$_}=$self->{data}{$_} for qw(short_forecasts seven_day_forecasts monthly_mean rising_time);
   return $XML->data;
+}
+
+=item C<<json>>
+
+Return data as json
+
+=back
+
+=cut
+sub json{
+  my $self = shift;
+  return to_json($self->{data});
 }
 
 =head1 SEE ALSO
