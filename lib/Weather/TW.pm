@@ -11,6 +11,7 @@ use Carp;
 
 our $VERSION = '0.01';
 
+my @tags=qw(short_forecasts seven_day_frecasts monthly_mean rising_time);
 my %area_zh = (
   '台北市'      => '36_01_data.htm',
   '新北市'      => '36_04_data.htm',
@@ -182,15 +183,58 @@ sub _fetch{
   my $url = shift;
   my $mech = new WWW::Mechanize;
   my $tree = new HTML::TreeBuilder;
+  my %hash;
 
   $mech->get($url);
   croak "Cannot fetch url $url\n" unless $mech->success;
   croak "Content is empty in $url\n" unless $mech->content;
   $tree->parse($mech->content) and $tree->eof;
 
-  my @topTags = 
-    map {tr/ ,/_/d}
-    map {lc $_->as_text} $tree->find_by_attribute('class','CenterTitle');
+  my @tables = $tree->find_by_attribute('class','datatable');
+  $hash{short_forecasts} = [{forecast => $self->_short_forecasts(shift @tables)}];
+  $hash{seven_day_forecasts} = [{area => $self->_seven_day_forecasts(shift @tables)}];
+  #need to push blah.. into area => arr_ref;
+  $self->{data}=\%hash;
+}
+
+sub _short_forecasts {
+  my ($self, $table) = @_;
+  my @forecasts=();
+  my @trs = $table->find('tr');
+  shift @trs;
+  foreach my $tr (@trs){
+    my %forecast;
+    my $img;
+    my @children = $tr->content_list;
+    $_=shift @children and $forecast{time} = $_->as_text;
+    $_=shift @children and $forecast{temp} = $_->as_text;
+    $_=shift @children;
+    $img=${$_->content}[0];
+    $forecast{weather} = $img->attr('title');
+    $_=shift @children and $forecast{confort} = $_->as_text;
+    $_=shift @children and $forecast{rain} = $_->as_text;
+
+    push @forecasts, \%forecast;
+  }
+  return \@forecasts;
+}
+sub _seven_day_forecasts{
+  my ($self, $table) = @_;
+  my @areas = ();
+  my @trs = $table->find('tr');
+  my $raw_dates = shift @trs;
+  my @dates = map {$_->as_text} $raw_dates->find('th');
+  shift @dates;
+
+  foreach my $tr (@trs){
+    my %area;
+    my $img;
+    my @arr = map{$_->as_text}$tr->find('th');
+    $area{name}=$arr[0];
+    my @children = $tr->content_list;
+  }
+  1;
+
 }
 1;
 __END__
