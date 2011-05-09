@@ -193,11 +193,11 @@ sub _fetch{
   $hash{short_forecasts} = [{forecast => $self->_short_forecasts(shift @tables)}];
   $hash{seven_day_forecasts} = [{area => $self->_seven_day_forecasts(shift @tables)}];
   if (scalar @tables == 3){
-    my @areas = $self->_seven_day_forecasts(shift @tables);
-    push @{$hash{seven_day_forecasts}[0]{area}},@areas;
+    my $areas = $self->_seven_day_forecasts(shift @tables);
+    my $ref = $hash{seven_day_forecasts}[0]{area};
+    push @{$ref},@{$areas};
   }
 
-  #need to push blah.. into area => arr_ref;
   $self->{data}=\%hash;
 }
 
