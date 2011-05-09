@@ -10,7 +10,7 @@ use XML::Smart;
 use utf8;
 use Carp;
 
-our $VERSION = '0.02';
+our $VERSION = '0.021';
 
 my %area_zh = (
   '台北市'      => '36_01_data.htm',
@@ -91,6 +91,8 @@ This module parse data from L<http://www.cwb.gov.tw/> (中央氣象局), and gen
 In future it may support json and other formats as well.
 
 =head1 METHODS
+
+=over
 
 =item C<<new>>
 
@@ -175,6 +177,8 @@ sub area_en {
 =item C<<xml>>
 
 Return data as xml
+
+=back
 
 =cut
 sub xml{
