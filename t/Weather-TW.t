@@ -5,7 +5,7 @@
 
 # change 'tests => 1' to 'tests => last_test_to_print';
 
-use Test::More tests => 7;
+use Test::More tests => 8;
 use utf8;
 use lib 'lib';
 BEGIN { 
@@ -17,10 +17,14 @@ my $w = new Weather::TW;
 can_ok $w, qw(area_zh area_en area _fetch);
 eval {$w->area('abcd')};
 ok $@, "expect croak when using wrong area name";
+
 ok $w->area('Taipei City'), "English name";
 $arr = $w->{data}{seven_day_forecasts}[0]{area};
-isnt scalar @{$arr}, 1, "number of Taipei area should be 3 or more";
-ok $w->area('台北市'), "Chinese name";
+isnt scalar @{$arr}, 1, "number of Taipei areas is more than 1";
+
+ok $w->area('馬祖'), "Chinese name";
+$arr = $w->{data}{seven_day_forecasts}[0]{area};
+is scalar @{$arr}, 1, "number of Matsu areas is 1";
 
 
 
