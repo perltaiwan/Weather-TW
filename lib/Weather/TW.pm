@@ -1,6 +1,6 @@
 package Weather::TW;
 
-our $VERSION = '0.331';
+our $VERSION = '0.34';
 
 =encoding utf-8
 
@@ -9,7 +9,7 @@ our $VERSION = '0.331';
 use 5.008006;
 use strict;
 use warnings;
-#use WWW::Mechanize;
+use Encode qw/encode decode/;
 use LWP::UserAgent;
 use HTML::TreeBuilder;
 use HTML::Element;
@@ -104,13 +104,18 @@ This module parse data from L<http://www.cwb.gov.tw/> (中央氣象局), and gen
 
 =item C<< new >>
 
-Create a new C<Weather::TW> object.
+Create a new C<Weather::TW> object. Available option is C< lang >, see method C< lang >.
+
+  $weather = Weather::TW->new( lang => 'zh' );
 
 =cut
 
 sub new {
   my $class = shift;
-  my $self = {@_};
+  my $self = {
+    lang=>'en',
+    @_,
+  };
   bless $self, $class;
   return $self;
 }
@@ -154,8 +159,19 @@ sub area {
   my $area = $area_en{$area_name};
   $area = $area_zh{$area_name} unless $area;
   croak "Unknown area $area_name\n" unless $area;
-  $self->_fetch($url_en.$area);
+  $self->{lang} eq 'zh' ? $self->_fetch($url_zh.$area) : $self->_fetch($url_en.$area);
   return $self;
+}
+
+=item C< lang($lang) >
+
+Available options are 'zh' or 'en'.
+
+=cut
+
+sub lang{
+  my ($self, $opt) = @_;
+  $self->{lang}=$opt;
 }
 
 
@@ -193,7 +209,11 @@ sub xml{
   my $XML = XML::Smart->new;
   $self->{xml}=$self->{data};
   $XML->{$_}= $self->{xml}{$_} for qw(short_forecasts seven_day_forecasts monthly_mean rising_time);
-  return $XML->data;
+  return $XML->data(
+    nometagen => 1,
+    noheader => 1,
+    nodtd => 1,
+  );
 }
 
 =item C<< json >>
@@ -293,21 +313,23 @@ sub _fetch{
 sub _monthly_mean{
   my ($self,$table)=@_;
   my @ths = $table->find('th');
+  my $zh = $self->{lang} eq 'zh';
   my $th = shift @ths;
   my %hash;
   @hash{qw(month max_temp min_temp rain_mm)}=
-    ($th->as_text, map {$_->as_text} $table->find('td'));
+    (decode("big5",$th->as_text), map {decode("big5",$_->as_text)} $table->find('td'));
   return \%hash;
 }
 sub _rising_time{
   my ($self,$table)=@_;
   my %hash;
-  @hash{qw(sunrise sunset moonrise roonset)}= map{$_->as_text} $table->find('td');
+  @hash{qw(sunrise sunset moonrise roonset)}= map{decode("big5",$_->as_text)} $table->find('td');
   return \%hash;
 }
 
 sub _short_forecasts {
   my ($self, $table) = @_;
+  my $zh = $self->{lang} eq 'zh';
   my @forecasts=();
   my @trs = $table->find('tr');
   shift @trs;
@@ -315,13 +337,13 @@ sub _short_forecasts {
     my %forecast;
     my $img;
     my @children = $tr->content_list;
-    $_=shift @children and $forecast{time} = $_->as_text;
-    $_=shift @children and $forecast{temp} = $_->as_text;
+    $_=shift @children and $forecast{time} = $zh ? decode("big5", $_->as_text): $_->as_text;
+    $_=shift @children and $forecast{temp} = $zh ? decode("big5", $_->as_text): $_->as_text;
     $_=shift @children;
     $img=${$_->content}[0];
-    $forecast{weather} = $img->attr('title');
-    $_=shift @children and $forecast{confort} = $_->as_text;
-    $_=shift @children and $forecast{rain} = $_->as_text;
+    $forecast{weather} = $zh ? decode("big5",$img->attr('title')):$img->attr('title');
+    $_=shift @children and $forecast{confort} = $zh ? decode("big5", $_->as_text): $_->as_text;
+    $_=shift @children and $forecast{rain} = $zh ? decode("big5", $_->as_text): $_->as_text;
 
     push @forecasts, \%forecast;
   }
@@ -332,13 +354,13 @@ sub _seven_day_forecasts{
   my @areas = ();
   my @trs = $table->find('tr');
   my $raw_dates = shift @trs;
-  my @dates = map {$_->as_text} $raw_dates->find('th');
+  my @dates = map {decode("big5",$_->as_text)} $raw_dates->find('th');
   shift @dates;
 
   foreach my $tr (@trs){
     my %area=();
     my @forecasts=();
-    my @ths = map{$_->as_text}$tr->find('th');
+    my @ths = map{decode("big5",$_->as_text)}$tr->find('th');
     $area{name}=$ths[0];
     my @tds = $tr->find('td');
     croak "There should be seven days in a weak!" unless 7 == scalar @tds;
@@ -348,8 +370,8 @@ sub _seven_day_forecasts{
       my $img = shift @imgs;
       push @forecasts, {
         date => $dates[$i],
-        weather => $img->attr('title'),
-        temp => $tds[$i]->as_text,
+        weather => decode("big5",$img->attr('title')),
+        temp => decode("big5",$tds[$i]->as_text),
       };
     }
     $area{forecast}=\@forecasts;
