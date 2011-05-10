@@ -83,6 +83,7 @@ Weather::TW - Fetch Taiwan weather data from L<http://www.cwb.gov.tw/>
   my $xml = $weather->area('Taipei')->xml;
   my $json = $weather->json;
   my $yaml = $weather->yaml;
+  my %hash = $weather->hash;
 
   foreach my $area ($weather->area_en){
     my $xml = $weather->area($area)->xml
@@ -185,7 +186,7 @@ sub area_en {
 
 =item C<< xml >>
 
-Return data as xml
+Return data as xml.
 
 =cut
 sub xml{
@@ -198,7 +199,7 @@ sub xml{
 
 =item C<< json >>
 
-Return data as json
+Return data as json.
 
 =cut
 sub json{
@@ -206,14 +207,36 @@ sub json{
   return to_json($self->{data});
 }
 
+=item C<< json_pretty >>
+
+Pretty json.
+
+=cut
+sub json_pretty{
+  my $self = shift;
+  return to_json($self->{data},{pretty =>1});
+}
+
 =item C<< yaml >>
 
-Return data as yaml
+Return data as yaml.
 
 =cut
 sub yaml{
   my $self = shift;
   return Dump $self->{data};
+}
+
+=item C<< hash >>
+
+Return a perl hash object.
+
+  %hash = $weather->hash;
+
+=cut
+sub hash{
+  my $self=shift;
+  return $self->{data};
 }
 
 =back

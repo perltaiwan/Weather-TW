@@ -5,7 +5,7 @@
 
 # change 'tests => 1' to 'tests => last_test_to_print';
 
-use Test::More tests => 11;
+use Test::More tests => 13;
 use utf8;
 use lib 'lib';
 BEGIN { 
@@ -25,16 +25,11 @@ isnt scalar @{$arr}, 1, "number of Taipei areas is more than 1";
 ok $w->xml, "xml ok";
 ok $w->json, "json ok";
 ok $w->yaml, "yaml ok";
+ok $w->hash, "hash ok";
+ok $w->json_pretty, "json pretty ok";
 
 ok $w->area('馬祖'), "Chinese name";
 $arr = $w->{data}{seven_day_forecasts}[0]{area};
 is scalar @{$arr}, 1, "number of Matsu areas is 1";
 
-
-
-
-#########################
-
-# Insert your test code below, the Test::More module is use()ed here so read
-# its man page ( perldoc Test::More ) for help writing this test script.
 
