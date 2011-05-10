@@ -1,4 +1,28 @@
-commit 05a044ecd5df8ecac19b27f8b873bb797d9b3244
+commit a535d03d8c4724e810e4fd3a5ba8f1aa3216c184
+Author: dryman <idryman@gmail.com>
+Date:   Tue May 10 13:01:01 2011 +0800
+
+    add hash and json_pretty interface
+
+commit e22649227857c407a44cf22c9f8d8c0b02578704
+Author: dryman <idryman@gmail.com>
+Date:   Tue May 10 12:41:31 2011 +0800
+
+    document updated json, yaml, some typo fixed
+
+commit 3be8d1db5b3e969ba61f7e6defeda5f05a4faf4e
+Author: dryman <idryman@gmail.com>
+Date:   Tue May 10 11:00:59 2011 +0800
+
+    fix xml bug
+
+commit 757f8b0d4c547c4dafcaa132bd0835d6afef7d82
+Author: dryman <idryman@gmail.com>
+Date:   Tue May 10 10:42:01 2011 +0800
+
+    use copy hash to avoid XML::Smart strange behavior
+
+commit 9eb9745f86728724bdc3b347decdaae2adb3c2b2
 Author: dryman <idryman@gmail.com>
 Date:   Tue May 10 09:42:28 2011 +0800
 
