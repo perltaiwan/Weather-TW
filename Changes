@@ -1,6 +1,107 @@
-Revision history for Perl extension Weather::TW.
+commit 05a044ecd5df8ecac19b27f8b873bb797d9b3244
+Author: dryman <idryman@gmail.com>
+Date:   Tue May 10 09:42:28 2011 +0800
 
-0.01  Mon May  9 13:35:50 2011
-	- original version; created by h2xs 1.23 with options
-		-AXc Weather::TW
+    use LWP::UserAgent instead of WWW::Mechanize
 
+commit 79f640a79137bf8a8dc1908e3cd199d58e488c5f
+Author: dryman <idryman@gmail.com>
+Date:   Tue May 10 08:57:37 2011 +0800
+
+    dealing encoding of pod
+
+commit 2499332bc0b5d328846cde0853733293847f4f56
+Author: dryman <idryman@gmail.com>
+Date:   Tue May 10 02:06:13 2011 +0800
+
+    add json support
+
+commit b3fef631e7e017d134f4acb230f9d842277132fe
+Author: dryman <idryman@gmail.com>
+Date:   Tue May 10 01:25:36 2011 +0800
+
+    perldoc bug fixed
+
+commit ead77387201cfcb10e94c903b9e19ad2e2bbde0b
+Author: dryman <idryman@gmail.com>
+Date:   Tue May 10 01:22:37 2011 +0800
+
+    document modified, makefile add dep Carp
+
+commit cb58cf3929eaabe195aff267cbe0fbb439c28a59
+Author: dryman <idryman@gmail.com>
+Date:   Tue May 10 00:42:29 2011 +0800
+
+    documentation finished
+
+commit 5f7d72f71106a7b9354cdbdebd2e70b70b40ffae
+Author: dryman <idryman@gmail.com>
+Date:   Tue May 10 00:22:53 2011 +0800
+
+    xml completed
+
+commit 93da98b4b2a36cea0696359d92cbdd1383ca13ff
+Author: dryman <idryman@gmail.com>
+Date:   Mon May 9 23:10:06 2011 +0800
+
+    multiple area test updated
+
+commit 0388c266ed7abe19d0a0ca96adeb7995ed9f2c68
+Author: dryman <idryman@gmail.com>
+Date:   Mon May 9 23:04:44 2011 +0800
+
+    multiple areas in seven_day_forecasts
+
+commit 20dea64c7bdca2caf3f0b614c864bcc6b5710513
+Author: dryman <idryman@gmail.com>
+Date:   Mon May 9 22:36:30 2011 +0800
+
+    push seven_day_forecasts area done
+
+commit 8f7efa5295431060a45d8f5a7d5ca31e3bfbb69a
+Author: dryman <idryman@gmail.com>
+Date:   Mon May 9 22:26:44 2011 +0800
+
+    _seven_day_forecasts passed
+
+commit 37992434a110026918b7ee9ae69b093221e601ea
+Author: dryman <idryman@gmail.com>
+Date:   Mon May 9 21:58:04 2011 +0800
+
+    _short_forecasts is done
+
+commit 189842f861e7d8ff6496163f73978fb02fe9393d
+Author: dryman <idryman@gmail.com>
+Date:   Mon May 9 17:56:50 2011 +0800
+
+    chinese hash is ok
+
+commit c04088e6306f44aec7f0c4cb21fd747a47450288
+Author: dryman <idryman@gmail.com>
+Date:   Mon May 9 16:48:05 2011 +0800
+
+    croak when using wrong area name
+
+commit c16a3f3cd37ded72de9932f268a5de6ec6ecd9c0
+Author: dryman <idryman@gmail.com>
+Date:   Mon May 9 16:13:47 2011 +0800
+
+    change "city" to "area"
+
+commit 3f54b853bfb20f3018317dcd203e16ef2ac6c699
+Author: dryman <idryman@gmail.com>
+Date:   Mon May 9 15:59:16 2011 +0800
+
+    new ok, methods can ok
+
+commit e2e655bb9c652a2e4b76e6439145d94a5b5123bb
+Author: dryman <idryman@gmail.com>
+Date:   Mon May 9 14:16:14 2011 +0800
+
+    new ok
+
+commit 581debb53a292a45633329b1c3aae3eaaeae0254
+Author: dryman <idryman@gmail.com>
+Date:   Mon May 9 13:51:44 2011 +0800
+
+    init commit

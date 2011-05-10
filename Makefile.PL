@@ -6,7 +6,7 @@ WriteMakefile(
     NAME              => 'Weather::TW',
     VERSION_FROM      => 'lib/Weather/TW.pm', # finds $VERSION
     PREREQ_PM         => {
-      'WWW::Mechanize' => 0,
+      'LWP::UserAgent' => 0,
       'HTML::TreeBuilder' => 0,
       'HTML::Element' => 0,
       'XML::Smart' => 0,

@@ -1,5 +1,7 @@
 package Weather::TW;
 
+our $VERSION = '0.025';
+
 =encoding utf-8
 
 =cut
@@ -7,7 +9,8 @@ package Weather::TW;
 use 5.008006;
 use strict;
 use warnings;
-use WWW::Mechanize;
+#use WWW::Mechanize;
+use LWP::UserAgent;
 use HTML::TreeBuilder;
 use HTML::Element;
 use XML::Smart;
@@ -15,7 +18,6 @@ use JSON;
 use utf8;
 use Carp;
 
-our $VERSION = '0.0244';
 
 my %area_zh = (
   '台北市'      => '36_01_data.htm',
@@ -228,14 +230,15 @@ at your option, any later version of Perl 5 you may have available.
 sub _fetch{
   my $self = shift;
   my $url = shift;
-  my $mech = new WWW::Mechanize;
   my $tree = new HTML::TreeBuilder;
   my %hash;
+  my $response = LWP::UserAgent->new->request(
+    HTTP::Request->new(GET => $url)
+  );
 
-  $mech->get($url);
-  croak "Cannot fetch url $url\n" unless $mech->success;
-  croak "Content is empty in $url\n" unless $mech->content;
-  $tree->parse($mech->content) and $tree->eof;
+  croak "Cannot fetch url $url\n" unless $response->is_success;
+  croak "Content is empty in $url\n" unless $response->content;
+  $tree->parse($response->content) and $tree->eof;
 
   my @tables = $tree->find_by_attribute('class','datatable');
   $hash{short_forecasts} = [{forecast => $self->_short_forecasts(shift @tables)}];
