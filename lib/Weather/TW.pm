@@ -1,5 +1,9 @@
 package Weather::TW;
 
+=encoding utf-8
+
+=cut
+
 use 5.008006;
 use strict;
 use warnings;
@@ -11,7 +15,7 @@ use JSON;
 use utf8;
 use Carp;
 
-our $VERSION = '0.023';
+our $VERSION = '0.0244';
 
 my %area_zh = (
   '台北市'      => '36_01_data.htm',
@@ -62,13 +66,11 @@ my %area_en = (
 my $url_zh = "http://www.cwb.gov.tw/V6/forecast/taiwan/";
 my $url_en = "http://www.cwb.gov.tw/eng/forecast/taiwan/";
 
-# Preloaded methods go here.
 
-# Below is stub documentation for your module. You'd better edit it!
 
 =head1 NAME
 
-Weather::TW - Fetch Taiwan weather data from 中央氣象局
+Weather::TW - Fetch Taiwan weather data from ¤¤¥¡®ð¶H§½
 
 =head1 SYNOPSIS
 
@@ -83,19 +85,19 @@ Weather::TW - Fetch Taiwan weather data from 中央氣象局
   }
 
   use utf8;
-  $xml = $weather->area('台北市')->xml;
+  $xml = $weather->area('¥x¥_¥«')->xml;
   # Chinese also works!
 
 =head1 DESCRIPTION
 
-This module parse data from L<http://www.cwb.gov.tw/> (中央氣象局), and generates xml data. 
+This module parse data from L<http://www.cwb.gov.tw/> (¤¤¥¡®ð¶H§½), and generates xml data. 
 In future it may support json and other formats as well.
 
 =head1 METHODS
 
 =over
 
-=item C<<new>>
+=item C<< new >>
 
 Create a new C<Weather::TW> object.
 
@@ -108,7 +110,8 @@ sub new {
   return $self;
 }
 
-=item C<<area('$area_name')>>
+=item C<< area('$area_name') >>
+
 
 City name can be either Chinese or English. The returned value is C<$self> so you can use it for cascading.
 
@@ -116,27 +119,27 @@ City name can be either Chinese or English. The returned value is C<$self> so yo
 
 The available area names are:
 
-    台北市       Taipei City
-    新北市       New Taipei City
-    台中市       Taichung City
-    台南市       Tainan City
-    高雄市       Kaohsiung City
-    基隆北海岸   Keelung North Coast
-    桃園         Taoyuan
-    新竹         Hsinchu
-    苗栗         Miaoli
-    彰化         Changhua
-    南投         Nantou
-    雲林         Yunlin
-    嘉義         Chiayi
-    屏東         Pingtung
-    恆春半島     Hengchun Peninsula
-    宜蘭         Yilan
-    花蓮         Hualien
-    台東         Taitung
-    澎湖         Penghu
-    金門         Kinmen
-    馬祖         Matsu
+   台北市         Taipei City
+   新北市         New Taipei City
+   台中市         Taichung City
+   台南市         Tainan City
+   高雄市         Kaohsiung City
+   基隆北海岸     Keelung North Coast
+   桃園           Taoyuan
+   新竹           Hsinchu
+   苗栗           Miaoli
+   彰化           Changhua
+   南投           Nantou
+   雲林           Yunlin
+   嘉義           Chiayi
+   屏東           Pingtung
+   恆春半島       Hengchun Peninsula
+   宜蘭           Yilan
+   花蓮           Hualien
+   台東           Taitung
+   澎湖           Penghu
+   金門           Kinmen
+   馬祖           Matsu
 
 =cut
 
@@ -151,7 +154,7 @@ sub area {
 }
 
 
-=item C<<area_zh>>
+=item C<< area_zh >>
 
 Return area names in Chinese.
 
@@ -163,7 +166,7 @@ sub area_zh {
   return %area_zh;
 }
 
-=item C<<area_en>>
+=item C<< area_en >>
 
 Return area names in English.
 
@@ -175,7 +178,7 @@ sub area_en {
   return %area_en;
 }
 
-=item C<<xml>>
+=item C<< xml >>
 
 Return data as xml
 
@@ -187,7 +190,7 @@ sub xml{
   return $XML->data;
 }
 
-=item C<<json>>
+=item C<< json >>
 
 Return data as json
 
@@ -202,6 +205,8 @@ sub json{
 =head1 SEE ALSO
 
 L<https://github.com/dryman/Weather-TW>
+
+and
 
 L<XML::Smart>
 
