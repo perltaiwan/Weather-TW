@@ -1,6 +1,6 @@
 package Weather::TW;
 
-our $VERSION = '0.025';
+our $VERSION = '0.30';
 
 =encoding utf-8
 
@@ -15,6 +15,7 @@ use HTML::TreeBuilder;
 use HTML::Element;
 use XML::Smart;
 use JSON;
+use YAML qw(Dump);
 use utf8;
 use Carp;
 
@@ -188,7 +189,8 @@ Return data as xml
 sub xml{
   my $self = shift;
   my $XML = XML::Smart->new;
-  $XML->{$_}=$self->{data}{$_} for qw(short_forecasts seven_day_forecasts monthly_mean rising_time);
+  my %data = $self->{data};
+  $XML->{$_}= $data{$_} for qw(short_forecasts seven_day_forecasts monthly_mean rising_time);
   return $XML->data;
 }
 
@@ -196,13 +198,23 @@ sub xml{
 
 Return data as json
 
-=back
-
 =cut
 sub json{
   my $self = shift;
   return to_json($self->{data});
 }
+
+=item C<< yaml >>
+
+Return data as yaml
+
+=cut
+sub yaml{
+  my $self = shift;
+  return Dump $self->{data};
+}
+
+=back
 
 =head1 SEE ALSO
 
