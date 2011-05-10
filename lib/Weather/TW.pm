@@ -1,6 +1,6 @@
 package Weather::TW;
 
-our $VERSION = '0.33';
+our $VERSION = '0.331';
 
 =encoding utf-8
 
@@ -79,7 +79,7 @@ Weather::TW - Fetch Taiwan weather data from L<http://www.cwb.gov.tw/>
 
   use Weather::TW;
 
-  my $weather = new Weather::TW;
+  my $weather = Weather::TW->new;
   my $xml = $weather->area('Taipei')->xml;
   my $json = $weather->json;
   my $yaml = $weather->yaml;
@@ -96,8 +96,7 @@ Weather::TW - Fetch Taiwan weather data from L<http://www.cwb.gov.tw/>
 
 =head1 DESCRIPTION
 
-This module parse data from L<http://www.cwb.gov.tw/> (中央氣象局), and generates xml data. 
-In future it may support json and other formats as well.
+This module parse data from L<http://www.cwb.gov.tw/> (中央氣象局), and generates xml/json/hash/yaml data.
 
 =head1 METHODS
 
@@ -116,12 +115,12 @@ sub new {
   return $self;
 }
 
-=item C<< area('$area_name') >>
+=item C<< area($area_name) >>
 
 
 City name can be either Chinese or English. The returned value is C<$self> so you can use it for cascading.
 
-    $xmlstr = $weather->area('Taipei City')->to_XML;
+    $xmlstr = $weather->area('Taipei City')->xml;
 
 The available area names are:
 
