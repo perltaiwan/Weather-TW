@@ -1,6 +1,6 @@
 package Weather::TW;
 
-our $VERSION = '0.30';
+our $VERSION = '0.31';
 
 =encoding utf-8
 
@@ -189,8 +189,8 @@ Return data as xml
 sub xml{
   my $self = shift;
   my $XML = XML::Smart->new;
-  my %data = $self->{data};
-  $XML->{$_}= $data{$_} for qw(short_forecasts seven_day_forecasts monthly_mean rising_time);
+  $self->{xml}=$self->{data};
+  $XML->{$_}= $self->{xml}{$_} for qw(short_forecasts seven_day_forecasts monthly_mean rising_time);
   return $XML->data;
 }
 
