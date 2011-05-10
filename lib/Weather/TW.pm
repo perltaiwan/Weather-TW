@@ -1,6 +1,6 @@
 package Weather::TW;
 
-our $VERSION = '0.31';
+our $VERSION = '0.32';
 
 =encoding utf-8
 
@@ -73,14 +73,16 @@ my $url_en = "http://www.cwb.gov.tw/eng/forecast/taiwan/";
 
 =head1 NAME
 
-Weather::TW - Fetch Taiwan weather data from ¤¤¥¡®ð¶H§½
+Weather::TW - Fetch Taiwan weather data from L<http://www.cwb.gov.tw/>
 
 =head1 SYNOPSIS
 
   use Weather::TW;
+
   my $weather = new Weather::TW;
   my $xml = $weather->area('Taipei')->xml;
-  # currently only xml is supported
+  my $json = $weather->json;
+  my $yaml = $weather->yaml;
 
   foreach my $area ($weather->area_en){
     my $xml = $weather->area($area)->xml
@@ -88,12 +90,12 @@ Weather::TW - Fetch Taiwan weather data from ¤¤¥¡®ð¶H§½
   }
 
   use utf8;
-  $xml = $weather->area('¥x¥_¥«')->xml;
+  $xml = $weather->area('台北')->xml;
   # Chinese also works!
 
 =head1 DESCRIPTION
 
-This module parse data from L<http://www.cwb.gov.tw/> (¤¤¥¡®ð¶H§½), and generates xml data. 
+This module parse data from L<http://www.cwb.gov.tw/> (中央氣象局), and generates xml data. 
 In future it may support json and other formats as well.
 
 =head1 METHODS
