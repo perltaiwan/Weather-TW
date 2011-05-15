@@ -7,29 +7,29 @@ Weather::TW is a perl module which can parse data from http://www.cwb.gov.tw (�
 
 To install this module, simply type the following into your terminal:
 
-  cpanm -v Weather::TW
+    cpanm -v Weather::TW
 
 If you don't have cpanm, just do the following:
 
-  curl -LO http://bit.ly/cpanm
-  chmod +x cpanm
-  sudo cp cpanm /usr/local/bin
+    curl -LO http://bit.ly/cpanm
+    chmod +x cpanm
+    sudo cp cpanm /usr/local/bin
 
 # USAGE
 
-  use Weather::TW;
-  my $weather = new Weather::TW;
-  my $xml = $weather->area('Taipei')->xml;
-  # currently only xml is supported
+    use Weather::TW;
+    my $weather = new Weather::TW;
+    my $xml = $weather->area('Taipei')->xml;
+    # currently only xml is supported
 
-  foreach my $area ($weather->area_en){
-    my $xml = $weather->area($area)->xml
-    print $xml;
-  }
+    foreach my $area ($weather->area_en){
+      my $xml = $weather->area($area)->xml
+      print $xml;
+    }
 
-  use utf8;
-  $xml = $weather->area('台北市')->xml;
-  # Chinese also works!
+    use utf8;
+    $xml = $weather->area('台北市')->xml;
+    # Chinese also works!
 
 # COPYRIGHT AND LICENCE
 
