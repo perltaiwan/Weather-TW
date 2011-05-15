@@ -1,6 +1,6 @@
 package Weather::TW;
 
-our $VERSION = '0.35';
+our $VERSION = '0.351';
 
 =encoding utf-8
 
@@ -294,7 +294,7 @@ sub _fetch{
 
   croak "Cannot fetch url $url\n" unless $response->is_success;
   croak "Content is empty in $url\n" unless $response->content;
-  $tree->parse($response->content) and $tree->eof;
+  $tree->parse(decode("big5",$response->content)) and $tree->eof;
 
   my @tables = $tree->find_by_attribute('class','datatable');
   $hash{short_forecasts} = [{forecast => $self->_short_forecasts(shift @tables)}];
@@ -318,15 +318,15 @@ sub _monthly_mean{
   my %hash;
   @hash{qw(month max_temp min_temp rain_mm)}=
     (
-      decode("big5",$th->as_text), 
-      map {decode("big5",$_->as_text)} $table->find('td'),
+      $th->as_text,
+      map {$_->as_text} $table->find('td'),
     );
   return \%hash;
 }
 sub _rising_time{
   my ($self,$table)=@_;
   my %hash;
-  @hash{qw(sunrise sunset moonrise roonset)}= map{decode("big5",$_->as_text)} $table->find('td');
+  @hash{qw(sunrise sunset moonrise roonset)}= map{$_->as_text} $table->find('td');
   return \%hash;
 }
 
@@ -340,11 +340,11 @@ sub _short_forecasts {
     my %forecast;
     my $img;
     my @children = $tr->content_list;
-    $forecast{time}    = decode("big5",(shift @children)->as_text);
-    $forecast{temp}    = decode("big5",(shift @children)->as_text);
-    $forecast{weather} = decode("big5", (${(shift @children)->content}[0])->attr('title'));
-    $forecast{confort} = decode("big5",(shift @children)->as_text);
-    $forecast{rain}    = decode("big5",(shift @children)->as_text);
+    $forecast{time}    = (shift @children)->as_text;
+    $forecast{temp}    = (shift @children)->as_text;
+    $forecast{weather} = (${(shift @children)->content}[0])->attr('title');
+    $forecast{confort} = (shift @children)->as_text;
+    $forecast{rain}    = (shift @children)->as_text;
 
     push @forecasts, \%forecast;
   }
@@ -354,13 +354,13 @@ sub _seven_day_forecasts{
   my ($self, $table) = @_;
   my @areas = ();
   my @trs = $table->find('tr');
-  my @dates = map {decode("big5",$_->as_text)} (shift @trs)->find('th');
+  my @dates = map {$_->as_text} (shift @trs)->find('th');
   shift @dates;
 
   foreach my $tr (@trs){
     my %area=();
     my @forecasts=();
-    my @ths = map{decode("big5",$_->as_text)}$tr->find('th');
+    my @ths = map{$_->as_text}$tr->find('th');
     $area{name}=$ths[0];
     my @tds = $tr->find('td');
     croak "There should be seven days in a weak!" unless 7 == scalar @tds;
@@ -370,8 +370,8 @@ sub _seven_day_forecasts{
       my $img = shift @imgs;
       push @forecasts, {
         date => $dates[$i],
-        weather => decode("big5",$img->attr('title')),
-        temp => decode("big5",$tds[$i]->as_text),
+        weather => $img->attr('title'),
+        temp => $tds[$i]->as_text,
       };
     }
     $area{forecast}=\@forecasts;
