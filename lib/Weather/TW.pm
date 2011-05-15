@@ -1,6 +1,6 @@
 package Weather::TW;
 
-our $VERSION = '0.34';
+our $VERSION = '0.35';
 
 =encoding utf-8
 
@@ -317,7 +317,10 @@ sub _monthly_mean{
   my $th = shift @ths;
   my %hash;
   @hash{qw(month max_temp min_temp rain_mm)}=
-    (decode("big5",$th->as_text), map {decode("big5",$_->as_text)} $table->find('td'));
+    (
+      decode("big5",$th->as_text), 
+      map {decode("big5",$_->as_text)} $table->find('td'),
+    );
   return \%hash;
 }
 sub _rising_time{
@@ -337,13 +340,11 @@ sub _short_forecasts {
     my %forecast;
     my $img;
     my @children = $tr->content_list;
-    $_=shift @children and $forecast{time} = $zh ? decode("big5", $_->as_text): $_->as_text;
-    $_=shift @children and $forecast{temp} = $zh ? decode("big5", $_->as_text): $_->as_text;
-    $_=shift @children;
-    $img=${$_->content}[0];
-    $forecast{weather} = $zh ? decode("big5",$img->attr('title')):$img->attr('title');
-    $_=shift @children and $forecast{confort} = $zh ? decode("big5", $_->as_text): $_->as_text;
-    $_=shift @children and $forecast{rain} = $zh ? decode("big5", $_->as_text): $_->as_text;
+    $forecast{time}    = decode("big5",(shift @children)->as_text);
+    $forecast{temp}    = decode("big5",(shift @children)->as_text);
+    $forecast{weather} = decode("big5", (${(shift @children)->content}[0])->attr('title'));
+    $forecast{confort} = decode("big5",(shift @children)->as_text);
+    $forecast{rain}    = decode("big5",(shift @children)->as_text);
 
     push @forecasts, \%forecast;
   }
@@ -353,8 +354,7 @@ sub _seven_day_forecasts{
   my ($self, $table) = @_;
   my @areas = ();
   my @trs = $table->find('tr');
-  my $raw_dates = shift @trs;
-  my @dates = map {decode("big5",$_->as_text)} $raw_dates->find('th');
+  my @dates = map {decode("big5",$_->as_text)} (shift @trs)->find('th');
   shift @dates;
 
   foreach my $tr (@trs){
