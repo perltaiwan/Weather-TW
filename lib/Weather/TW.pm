@@ -1,6 +1,6 @@
 package Weather::TW;
 
-our $VERSION = '0.351';
+our $VERSION = '0.352';
 
 =encoding utf-8
 
@@ -80,7 +80,7 @@ Weather::TW - Fetch Taiwan weather data from L<http://www.cwb.gov.tw/>
   use Weather::TW;
 
   my $weather = Weather::TW->new;
-  my $xml = $weather->area('Taipei')->xml;
+  my $xml = $weather->area('Taipei City')->xml;
   my $json = $weather->json;
   my $yaml = $weather->yaml;
   my %hash = $weather->hash;
