@@ -19,29 +19,6 @@ use YAML qw(Dump);
 use utf8;
 use Carp;
 
-my %area_zh_v7 = (
-  台北市      => 'Taipei_City.htm',
-  新北市      => 'New_Taipei_City.htm',
-  台中市      => 'Taichung_City.htm',
-  台南市      => 'Tainan_City.htm', 
-  高雄市      => 'Kaohsiung_City.htm',
-  基隆北海岸  => 'Keelung_North_Coast.htm',
-  桃園        => 'Taoyuan.htm',
-  新竹        => 'Hsinchu.htm',
-  苗栗        => 'Miaoli.htm',
-  彰化        => 'Changhua.htm',
-  南投        => 'Nantou.htm',
-  雲林        => 'Yunlin.htm',
-  嘉義        => 'Chiayi.htm',
-  屏東        => 'Pingtung.htm',
-  恆春半島    => 'Hengchun_Peninsula.htm',
-  宜蘭        => 'Yilan.htm',
-  花蓮        => 'Hualien.htm',
-  台東        => 'Taitung.htm',
-  澎湖        => 'Penghu.htm',
-  金門        => 'Kinmen.htm',
-  馬祖        => 'Matsu.htm',
-);
 
 
 my %area_zh = (

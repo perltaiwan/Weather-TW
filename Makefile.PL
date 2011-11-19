@@ -8,12 +8,16 @@ all_from 'lib/Weather/TW.pm';
 
 requires Encode => 0;
 requires 'LWP::UserAgent' => 0;
+requires 'LWP::Simple' => 6.00;
+requires 'Mouse' => 0.97;
 requires 'HTML::TreeBuilder' => 0;
 requires 'HTML::Element' => 0;
 requires 'XML::Smart' => 0;
 requires 'Carp' => 0;
 requires 'JSON' => 0;
 requires 'YAML' => 0;
+
+test_requires 'Test::More' => 0;
 
 author 'dryman <idryman@gmail.com>';
 license 'mit';
