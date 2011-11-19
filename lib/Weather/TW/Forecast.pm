@@ -36,6 +36,30 @@ my %area_zh_v7 = (
 
 Weather::TW::Forecast - Get Taiwan forecasts
 
+=head2 C<new>
+
+    my $weather = Weather::TW::Forecast->new(
+      location => '台北',
+    );
+
+Construct a new Weather::TW::Forecast object.
+
+Available locations are
+
+    台北市 新北市 台中市 台南市 高雄市 基隆北海岸 桃園 新竹 苗栗 彰化 南投 雲林 嘉義 屏東 恆春半島 宜蘭 花蓮 台東 澎湖 金門 馬祖
+
+Weather::TW::Forecast will do the fetching right after location is set.
+
+=head2 C<location>
+
+    $weather->location('台中市'); 
+    # Change location to 台中市 and do the fetching
+    
+    $location = $weather->location();
+    # Get the location string of $weather
+
+Setter and getter of location.
+
 =cut
 
 has location => (
@@ -45,14 +69,6 @@ has location => (
     嘉義 屏東 恆春半島 宜蘭 花蓮 台東 澎湖 金門 馬祖|]),
   trigger => \&_fetch_forecast,
 );
-
-=item C<<new>>
-
-Available locations are
-
-    台北市 新北市 台中市 台南市 高雄市 基隆北海岸 桃園 新竹 苗栗 彰化 南投 雲林 嘉義 屏東 恆春半島 宜蘭 花蓮 台東 澎湖 金門 馬祖
-
-=cut
 
 
 sub _fetch_forecast {};
