@@ -76,12 +76,15 @@ has location => (
 
 =cut
 
-has short_forecast => (
+has _short_forecasts => (
   traits => ['Array'],
   is => 'ro',
   isa => 'ArrayRef[Weather::TW::Forecast::ShortForecast]',
   clearer => '_clear_short_forecast',
-  handles => { _add_short_forecast => 'push' },
+  handles => { 
+    _add_short_forecast => 'push',
+    short_forecasts => 'elements',
+  },
 );
 
 =head2 C<weekly>
@@ -97,6 +100,7 @@ has monthly_mean => (
   is => 'ro',
   isa => 'HashRef',
 );
+
 
 sub _fetch_forecast {
   my $self=shift;
@@ -114,7 +118,7 @@ sub _fetch_forecast {
     $title = shift @titles or croak "Can't get 今明預報 in $url";
     $table = shift @tables;
   }until $title->all_text =~ /^今明預報/;
-  $table->find('tbody>tr')->each(sub{
+  $table->find('tbody > tr')->each(sub{
     my $e = shift;
     my @tds = $e->find('td')->each;
 
@@ -127,31 +131,25 @@ sub _fetch_forecast {
 #  </tr>
     my $time_range = $e->at('th')->all_text or croak "Can't get time range";
     my $temp_range = (shift @tds)->text or croak "Can't get temperature";
-    my $weather = (shift @tds)->attr('title') or croak "Can't get weather info";
+    my $weather = (shift @tds)->at('img')->attrs('title') or croak "Can't get weather info";
     my $confortable = (shift @tds)->text or croak "Can't get confortable info";
     my $rain = (shift @tds)->text or croak "Can't get rain info";
+    $rain=~s/\s+%\s*//;
 
     $time_range =~ 
-      qr|(\d+)/     # month
-         (\d+)\s    # day
-         (\d+):     # hour
-         (\d+)~     # minute
-         (\d+)/(\d+)\s(\d+):(\d+)|x;
-    my $today = Datetime->today();
+      qr|(\d+)/(\d+)\s(\d+):(\d+)~(\d+)/(\d+)\s(\d+):(\d+)|;
+    my $today = DateTime->today();
 
     $self->_add_short_forecast(Weather::TW::Forecast::ShortForecast->new(
       start => DateTime->new(
-        year => $today->year,
-        month => $1, day => $2,
-        hour => $3, minute => $4,
+        year => $today->year, month => $1, day => $2, hour => $3, minute => $4,
         time_zone => 'Asia/Taipei'),
       end => DateTime->new(
-        year => $today->year,
-        month => $5, day=>$6, hour=>$7, minute=>$8,
+        year => $today->year, month => $5, day=>$6, hour=>$7, minute=>$8,
         time_zone => 'Asia/Taipei'),
-      temperature => $temp_range,
+      temperature => $temp_range, 
       weather => $weather,
-      confortable => $confortable,
+      confortable => $confortable, 
       rain => $rain,
     ));
   });
