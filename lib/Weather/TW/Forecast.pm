@@ -7,6 +7,8 @@ use LWP::Simple;
 use Moose;
 use Moose::Util::TypeConstraints;
 use Mojo::DOM;
+use DateTime;
+use Carp;
 
 my %area_zh_v7 = (
   台北市      => 'Taipei_City.htm',
@@ -70,8 +72,107 @@ has location => (
   trigger => \&_fetch_forecast,
 );
 
+=head2 C<short_forecast>
 
-sub _fetch_forecast {};
+=cut
+
+has short_forecast => (
+  traits => ['Array'],
+  is => 'ro',
+  isa => 'ArrayRef[Weather::TW::Forecast::ShortForecast]',
+  clearer => '_clear_short_forecast',
+  handles => { _add_short_forecast => 'push' },
+);
+
+=head2 C<weekly>
+
+=cut
+
+has weekly => (
+  is => 'ro',
+  isa => 'ArrayRef[Weather::TW::Forecast::Weekly]',
+);
+
+has monthly_mean => (
+  is => 'ro',
+  isa => 'HashRef',
+);
+
+sub _fetch_forecast {
+  my $self=shift;
+  my $url = 'http://www.cwb.gov.tw/V7/forecast/taiwan/'. $area_zh_v7{$self->location()};
+  my $content = get $url or croak "Can't fetch url $url";
+  my $dom = Mojo::DOM->new($content);
+
+  my @titles = $dom->find('h3.CenterTitle')->each;
+  my @tables = $dom->find('table.FcstBoxTable01')->each;
+  my $title; 
+  my $table;
+
+  $self->_clear_short_forecast;
+  do {
+    $title = shift @titles or croak "Can't get 今明預報 in $url";
+    $table = shift @tables;
+  }until $title->all_text =~ /^今明預報/;
+  $table->find('tbody>tr')->each(sub{
+    my $e = shift;
+    my @tds = $e->find('td')->each;
+
+#  <tr>
+#    <th scope="row">今晚至明晨 11/19 18:00~11/20 06:00</th>
+#    <td>20 ~ 23</td>
+#    <td> <img alt="陰短暫陣雨" src="../../symbol/weather/gif/night/26.gif" title="陰短暫陣雨" /></td>
+#    <td>舒適</td>
+#    <td>100 %</td>
+#  </tr>
+    my $time_range = $e->at('th')->all_text or croak "Can't get time range";
+    my $temp_range = (shift @tds)->text or croak "Can't get temperature";
+    my $weather = (shift @tds)->attr('title') or croak "Can't get weather info";
+    my $confortable = (shift @tds)->text or croak "Can't get confortable info";
+    my $rain = (shift @tds)->text or croak "Can't get rain info";
+
+    $time_range =~ 
+      qr|(\d+)/     # month
+         (\d+)\s    # day
+         (\d+):     # hour
+         (\d+)~     # minute
+         (\d+)/(\d+)\s(\d+):(\d+)|x;
+    my $today = Datetime->today();
+
+    $self->_add_short_forecast(Weather::TW::Forecast::ShortForecast->new(
+      start => DateTime->new(
+        year => $today->year,
+        month => $1, day => $2,
+        hour => $3, minute => $4,
+        time_zone => 'Asia/Taipei'),
+      end => DateTime->new(
+        year => $today->year,
+        month => $5, day=>$6, hour=>$7, minute=>$8,
+        time_zone => 'Asia/Taipei'),
+      temperature => $temp_range,
+      weather => $weather,
+      confortable => $confortable,
+      rain => $rain,
+    ));
+  });
+};
+
+package Weather::TW::Forecast::Weekly;
+use DateTime;
+use Moose;
+has day => qw|is ro isa DateTime|;
+has temperature => qw|is ro isa Str|;
+has weather => qw|is ro isa Str|;
+
+package Weather::TW::Forecast::ShortForecast;
+use DateTime;
+use Moose;
+has start => qw|is ro isa DateTime|;
+has end => qw|is ro isa DateTime|;
+has temperature => qw|is ro isa Str|;
+has weather => qw|is ro isa Str|;
+has confortable => qw|is ro isa Str|;
+has rain => qw|is ro isa Int|;
 
 1;
 __END__
