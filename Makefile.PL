@@ -17,5 +17,6 @@ requires 'YAML' => 0;
 
 author 'dryman <idryman@gmail.com>';
 license 'mit';
+readme_markdown_from 'lib/Weather/TW.pm';
 
 WriteAll;
