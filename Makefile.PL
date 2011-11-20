@@ -18,6 +18,7 @@ requires 'JSON' => 0;
 requires 'YAML' => 0;
 
 test_requires 'Test::More' => 0;
+test_requires 'Test::More::UTF8' => 0;
 
 author 'dryman <idryman@gmail.com>';
 license 'mit';

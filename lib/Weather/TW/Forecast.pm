@@ -72,13 +72,36 @@ has location => (
   trigger => \&_fetch_forecast,
 );
 
+=head2 C<all_locations>
+
+Simply return all available locations
+
+=cut
+
+sub all_locations {
+  qw| 台北市 新北市 台中市 台南市 高雄市 基隆北海岸 桃園 新竹 苗栗 
+  彰化 南投 雲林 嘉義 屏東 恆春半島 宜蘭 花蓮 台東 澎湖 金門 馬祖|;
+}
+
 =head2 C<short_forecast>
+
+    foreach ($weather->short_forecasts){
+      say $_->start;
+      say $_->end;         # DateTime objects specify forecast time interval
+      say $_->temperature; # Temperature string, ex: '23 ~ 25'
+      say $_->weather;     # Weather string, ex "陰短暫陣雨" 
+      say $_->confortable; # ex '舒適'
+      say $_->rain;        # probabilty to rain, 0~100%
+    }
+
+This method returns an array of L<Weather::TW::Forecast::ShortForecast> objects.
+The object owns six attributes, as shown as above.
 
 =cut
 
 has _short_forecasts => (
   traits => ['Array'],
-  is => 'ro',
+  is => 'bare',
   isa => 'ArrayRef[Weather::TW::Forecast::ShortForecast]',
   clearer => '_clear_short_forecast',
   handles => { 
@@ -91,9 +114,15 @@ has _short_forecasts => (
 
 =cut
 
-has weekly => (
-  is => 'ro',
+has _weekly => (
+  traits => ['Array'],
+  is => 'bare',
   isa => 'ArrayRef[Weather::TW::Forecast::Weekly]',
+  clearer => '_clear_weekly',
+  handles => {
+    weekly_forecasts => 'elements',
+    _add_weekly => 'push',
+  },
 );
 
 has monthly_mean => (
@@ -113,15 +142,17 @@ sub _fetch_forecast {
   my $title; 
   my $table;
 
+  # start to parse short forecasts
   $self->_clear_short_forecast;
   do {
     $title = shift @titles or croak "Can't get 今明預報 in $url";
     $table = shift @tables;
-  }until $title->all_text =~ /^今明預報/;
+  }until $title->all_text =~ qr|今明預報.+(2\d\d\d)/\d+/\d+|;
+  my $year = $1;  #get year information for DateTime
+
   $table->find('tbody > tr')->each(sub{
     my $e = shift;
     my @tds = $e->find('td')->each;
-
 #  <tr>
 #    <th scope="row">今晚至明晨 11/19 18:00~11/20 06:00</th>
 #    <td>20 ~ 23</td>
@@ -138,29 +169,46 @@ sub _fetch_forecast {
 
     $time_range =~ 
       qr|(\d+)/(\d+)\s(\d+):(\d+)~(\d+)/(\d+)\s(\d+):(\d+)|;
-    my $today = DateTime->today();
 
     $self->_add_short_forecast(Weather::TW::Forecast::ShortForecast->new(
       start => DateTime->new(
-        year => $today->year, month => $1, day => $2, hour => $3, minute => $4,
+        year => $year, month => $1, day => $2, hour => $3, minute => $4,
         time_zone => 'Asia/Taipei'),
       end => DateTime->new(
-        year => $today->year, month => $5, day=>$6, hour=>$7, minute=>$8,
+        year => $year, month => $5, day=>$6, hour=>$7, minute=>$8,
         time_zone => 'Asia/Taipei'),
       temperature => $temp_range, 
       weather => $weather,
       confortable => $confortable, 
       rain => $rain,
     ));
-  });
+  }); # end of parsing short forecasts
+
+  # start parsing weekly forecasts
+  $self->_clear_weekly;
+  do {
+    $title = shift @titles or croak "Can't get １週預報 in $url";
+    $table = shift @tables;
+  }until $title->all_text =~ qr|１週預報|;
+  # skip left most th, it's 預報地區, not day info
+  my $first_day = ($table->find('thead > tr > th')->each)[1];
+  $first_day->all_text =~ qr|(\d+)/(\d+)|;
+  my $week_day = DateTime->new( year => $year, month => $1, day => $2,);
+
+  $table->find('tbody > tr > td')->each(sub{
+    my $e = shift;
+    my $temperature = $e->all_text or croak "Can't get temperature (weekly)";
+    my $weather = $e->at('img')->attrs('title') or croak "can't get weather (weekly)";
+    $self->_add_weekly(Weather::TW::Forecast::Weekly->new(
+      day => $week_day,
+      temperature => $temperature,
+      weather => $weather,
+    ));
+    # use add (days=>1) can avoid bug when passing a year
+    $week_day->add(days=>1);
+  }); # end of parsing weekly forecasts
 };
 
-package Weather::TW::Forecast::Weekly;
-use DateTime;
-use Moose;
-has day => qw|is ro isa DateTime|;
-has temperature => qw|is ro isa Str|;
-has weather => qw|is ro isa Str|;
 
 package Weather::TW::Forecast::ShortForecast;
 use DateTime;
@@ -171,6 +219,13 @@ has temperature => qw|is ro isa Str|;
 has weather => qw|is ro isa Str|;
 has confortable => qw|is ro isa Str|;
 has rain => qw|is ro isa Int|;
+
+package Weather::TW::Forecast::Weekly;
+use DateTime;
+use Moose;
+has day => qw|is ro isa DateTime|;
+has temperature => qw|is ro isa Str|;
+has weather => qw|is ro isa Str|;
 
 1;
 __END__
