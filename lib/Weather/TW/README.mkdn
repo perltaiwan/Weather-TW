@@ -1,0 +1,48 @@
+# NAME
+
+Weather::TW::Forecast - Get Taiwan forecasts
+
+## `new`
+
+    my $weather = Weather::TW::Forecast->new(
+      location => '台北',
+    );
+
+Construct a new Weather::TW::Forecast object.
+
+Available locations are
+
+    台北市 新北市 台中市 台南市 高雄市 基隆北海岸 桃園 新竹 苗栗 彰化 南投 雲林 嘉義 屏東 恆春半島 宜蘭 花蓮 台東 澎湖 金門 馬祖
+
+Weather::TW::Forecast will do the fetching right after location is set.
+
+## `location`
+
+    $weather->location('台中市'); 
+    # Change location to 台中市 and do the fetching
+    
+
+    $location = $weather->location();
+    # Get the location string of $weather
+
+Setter and getter of location.
+
+## `all_locations`
+
+Simply return all available locations
+
+## `short_forecast`
+
+    foreach ($weather->short_forecasts){
+      say $_->start;
+      say $_->end;         # DateTime objects specify forecast time interval
+      say $_->temperature; # Temperature string, ex: '23 ~ 25'
+      say $_->weather;     # Weather string, ex "陰短暫陣雨" 
+      say $_->confortable; # ex '舒適'
+      say $_->rain;        # probabilty to rain, 0~100%
+    }
+
+This method returns an array of [Weather::TW::Forecast::ShortForecast](http://search.cpan.org/perldoc?Weather::TW::Forecast::ShortForecast) objects.
+The object owns six attributes, as shown as above.
+
+## `weekly`

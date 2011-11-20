@@ -4,21 +4,21 @@ Weather::TW - Fetch Taiwan weather data from [http://www.cwb.gov.tw/](http://www
 
 # SYNOPSIS
 
-    use Weather::TW;
-  
+      use Weather::TW;
+    
 
-    my $weather = Weather::TW->new;
-    my $xml = $weather->area('Taipei City')->xml;
-    my $json = $weather->json;
-    my $yaml = $weather->yaml;
-    my %hash = $weather->hash;
-  
+      my $weather = Weather::TW->new;
+      my $xml = $weather->area('Taipei City')->xml;
+      my $json = $weather->json;
+      my $yaml = $weather->yaml;
+      my %hash = $weather->hash;
+    
 
-    foreach my $area ($weather->area_en){
-      my $xml = $weather->area($area)->xml
-      print $xml;
-    }
-  
+      foreach my $area ($weather->area_en){
+        my $xml = $weather->area($area)->xml
+        print $xml;
+      }
+    
 
     use utf8;
     $xml = $weather->area('台北')->xml;
@@ -34,7 +34,7 @@ This module parse data from [http://www.cwb.gov.tw/](http://www.cwb.gov.tw/) (�
 
 Create a new `Weather::TW` object. Available option is ` lang `, see method ` lang `.
 
-  $weather = Weather::TW->new( lang => 'zh' );
+    $weather = Weather::TW->new( lang => 'zh' );
 
 - `area($area_name)`
 
@@ -104,7 +104,7 @@ Return data as yaml.
 
 Return a perl hash object.
 
-  %hash = $weather->hash;
+    %hash = $weather->hash;
 
 # SEE ALSO
 
