@@ -4,22 +4,25 @@ Weather::TW - Fetch Taiwan weather data from [http://www.cwb.gov.tw/](http://www
 
 # SYNOPSIS
 
-  use Weather::TW;
+    use Weather::TW;
+  
 
-  my $weather = Weather::TW->new;
-  my $xml = $weather->area('Taipei City')->xml;
-  my $json = $weather->json;
-  my $yaml = $weather->yaml;
-  my %hash = $weather->hash;
+    my $weather = Weather::TW->new;
+    my $xml = $weather->area('Taipei City')->xml;
+    my $json = $weather->json;
+    my $yaml = $weather->yaml;
+    my %hash = $weather->hash;
+  
 
-  foreach my $area ($weather->area_en){
-    my $xml = $weather->area($area)->xml
-    print $xml;
-  }
+    foreach my $area ($weather->area_en){
+      my $xml = $weather->area($area)->xml
+      print $xml;
+    }
+  
 
-  use utf8;
-  $xml = $weather->area('台北')->xml;
-  # Chinese also works!
+    use utf8;
+    $xml = $weather->area('台北')->xml;
+    # Chinese also works!
 
 # DESCRIPTION
 
@@ -43,27 +46,27 @@ City name can be either Chinese or English. The returned value is `$self` so you
 
 The available area names are:
 
-   台北市         Taipei City
-   新北市         New Taipei City
-   台中市         Taichung City
-   台南市         Tainan City
-   高雄市         Kaohsiung City
-   基隆北海岸     Keelung North Coast
-   桃園           Taoyuan
-   新竹           Hsinchu
-   苗栗           Miaoli
-   彰化           Changhua
-   南投           Nantou
-   雲林           Yunlin
-   嘉義           Chiayi
-   屏東           Pingtung
-   恆春半島       Hengchun Peninsula
-   宜蘭           Yilan
-   花蓮           Hualien
-   台東           Taitung
-   澎湖           Penghu
-   金門           Kinmen
-   馬祖           Matsu
+    台北市         Taipei City
+    新北市         New Taipei City
+    台中市         Taichung City
+    台南市         Tainan City
+    高雄市         Kaohsiung City
+    基隆北海岸     Keelung North Coast
+    桃園           Taoyuan
+    新竹           Hsinchu
+    苗栗           Miaoli
+    彰化           Changhua
+    南投           Nantou
+    雲林           Yunlin
+    嘉義           Chiayi
+    屏東           Pingtung
+    恆春半島       Hengchun Peninsula
+    宜蘭           Yilan
+    花蓮           Hualien
+    台東           Taitung
+    澎湖           Penghu
+    金門           Kinmen
+    馬祖           Matsu
 
 - ` lang($lang) `
 
