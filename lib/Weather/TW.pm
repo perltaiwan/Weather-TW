@@ -75,8 +75,44 @@ my $url_en = "http://www.cwb.gov.tw/eng/forecast/taiwan/";
 =head1 NAME
 
 Weather::TW - Fetch Taiwan weather data from L<http://www.cwb.gov.tw/>
+Most methods are reimplimented in L<Weather::TW::Forecast> use them instead.
 
 =head1 SYNOPSIS
+
+    use Weather::TW::Forecast;
+    my $weather = Weather::TW::Forecast->new(
+      location => '台北',
+    );
+    foreach ($weather->short_forecasts){
+      say $_->start;
+      say $_->end;         # DateTime objects specify forecast time interval
+      say $_->temperature; # Temperature string, ex: '23 ~ 25'
+      say $_->weather;     # Weather string, ex "陰短暫陣雨" 
+      say $_->confortable; # ex '舒適'
+      say $_->rain;        # probabilty to rain, 0~100%
+    }
+    foreach ($weather->weekly_forecasts){
+      say $_->day;         # DateTime object
+      say $_->temperature; # Temperature string, ex: '23 ~ 25'
+      say $_->weather;     # Weather string, ex "陰短暫陣雨" 
+    }
+    my $hash_ref = $weather->montly_mean;
+    say $hash_ref->{temp_high}; # Maximum temperature
+    say $hash_ref->{temp_low};  # Mininum temperature
+    say $hash_ref->{rain};      # Rain precipitation (mm)
+
+head1 DESCRIPTION
+
+L<Weather::TW::Forecast> reimplement L<Weather::TW> with new web address (from
+V6 to V7) and new parser (use L<Mojo::DOM> instead of L<HTML::TreeBulder>). The
+methods in L<Weather::TW> will be deprecated and shiped to
+L<Weather::TW::Forecast>. More submodules will be develop to handle obsevations
+and detail rain infos.  L<Weather::TW> will be a abstract class to access these
+submodules.
+
+=head1 OLD SYNOPSIS
+
+Documentation below will be deprecated. 
 
     use Weather::TW;
   
@@ -99,7 +135,7 @@ Weather::TW - Fetch Taiwan weather data from L<http://www.cwb.gov.tw/>
 
 This module parse data from L<http://www.cwb.gov.tw/> (中央氣象局), and generates xml/json/hash/yaml data.
 
-=head1 METHODS
+=head1 OLD METHODS
 
 =over
 
