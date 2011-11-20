@@ -6,10 +6,10 @@ use inc::Module::Install;
 name 'Weather-TW';
 all_from 'lib/Weather/TW.pm';
 
-requires 'DateTime' => 0;
+requires 'DateTime' => 0.70;
 requires 'LWP::UserAgent' => 0;
 requires 'LWP::Simple' => 6.00;
-requires 'Moose' => 0;
+requires 'Moose' => 2.04;
 requires 'HTML::TreeBuilder' => 0;
 requires 'HTML::Element' => 0;
 requires 'XML::Smart' => 0;

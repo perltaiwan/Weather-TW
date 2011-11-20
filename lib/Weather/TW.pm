@@ -1,6 +1,6 @@
 package Weather::TW;
 
-our $VERSION = '0.352';
+our $VERSION = '0.500';
 
 =encoding utf-8
 
