@@ -40,6 +40,40 @@ my %area_zh_v7 = (
 
 Weather::TW::Forecast - Get Taiwan forecasts
 
+=head1 SYNOPSIS
+
+    use Weather::TW::Forecast;
+    my $weather = Weather::TW::Forecast->new(
+      location => '台北',
+    );
+    foreach ($weather->short_forecasts){
+      say $_->start;
+      say $_->end;         # DateTime objects specify forecast time interval
+      say $_->temperature; # Temperature string, ex: '23 ~ 25'
+      say $_->weather;     # Weather string, ex "陰短暫陣雨" 
+      say $_->confortable; # ex '舒適'
+      say $_->rain;        # probabilty to rain, 0~100%
+    }
+    foreach ($weather->weekly_forecasts){
+      say $_->day;         # DateTime object
+      say $_->temperature; # Temperature string, ex: '23 ~ 25'
+      say $_->weather;     # Weather string, ex "陰短暫陣雨" 
+    }
+    my $hash_ref = $weather->montly_mean;
+    say $hash_ref->{temp_high}; # Maximum temperature
+    say $hash_ref->{temp_low};  # Mininum temperature
+    say $hash_ref->{rain};      # Rain precipitation (mm)
+
+=head1 DESCRIPTION
+
+This module reimplement L<Weather::TW> with new web address (from V6 to V7) and
+new parser (use L<Mojo::DOM> instead of L<HTML::TreeBulder>). The methods in 
+L<Weather::TW> will be deprecated and shiped to L<Weather::TW::Forecast>. More
+submodules will be develop to handle obsevations and detail rain infos.
+L<Weather::TW> will be a abstract class to access these submodules.
+
+=head1 METHODS
+
 =head2 C<new>
 
     my $weather = Weather::TW::Forecast->new(
@@ -96,7 +130,7 @@ sub all_locations {
       say $_->rain;        # probabilty to rain, 0~100%
     }
 
-This method returns an array of L<Weather::TW::Forecast::ShortForecast> objects.
+This method returns an array of C<Weather::TW::Forecast::ShortForecast> objects.
 The object owns six attributes, as shown as above.
 
 =cut
@@ -114,6 +148,15 @@ has _short_forecasts => (
 
 =head2 C<weekly>
 
+    foreach ($weather->weekly_forecasts){
+      say $_->day;         # DateTime object
+      say $_->temperature; # Temperature string, ex: '23 ~ 25'
+      say $_->weather;     # Weather string, ex "陰短暫陣雨" 
+    }
+
+Returns a sequence of L<Weather::TW::Weekly> objects, the contents of the object
+is as same as above. 
+
 =cut
 
 has _weekly => (
@@ -127,9 +170,22 @@ has _weekly => (
   },
 );
 
+=head2 C<montly_mean>
+
+    my $hash_ref = $weather->montly_mean;
+    say $hash_ref->{temp_high}; # Maximum temperature
+    say $hash_ref->{temp_low};  # Mininum temperature
+    say $hash_ref->{rain};      # Rain precipitation (mm)
+
+A hash references contains maximum temperature, minimun temperature, and rain
+precipitation (mm).
+
+=cut
+
 has monthly_mean => (
   is => 'ro',
   isa => 'HashRef',
+  writer => '_set_monthly_mean',
 );
 
 
@@ -209,6 +265,20 @@ sub _fetch_forecast {
     # use add (days=>1) can avoid bug when passing a year
     $week_day->add(days=>1);
   }); # end of parsing weekly forecasts
+  
+  # start parsing monthly mean
+  do {
+    $title = shift @titles or croak "Can't get 月平均 in $url";
+    $table = shift @tables;
+  }until $title->all_text =~ qr|月平均|;
+  my @monthly = $table->find('td')->each;
+  $self->_set_monthly_mean({
+    temp_high => $monthly[0]->text,
+    temp_low => $monthly[1]->text,
+    rain => $monthly[2]->text,
+  });
+  #end of parsing monthly mean
+
 };
 
 
@@ -228,6 +298,7 @@ use Moose;
 has day => qw|is ro isa DateTime|;
 has temperature => qw|is ro isa Str|;
 has weather => qw|is ro isa Str|;
+
 
 1;
 __END__
