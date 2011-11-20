@@ -34,6 +34,8 @@ my %area_zh_v7 = (
   馬祖        => 'Matsu.htm',
 );
 
+=encoding utf8
+
 =head1 NAME
 
 Weather::TW::Forecast - Get Taiwan forecasts
