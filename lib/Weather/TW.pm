@@ -101,7 +101,7 @@ Most methods are reimplimented in L<Weather::TW::Forecast> use them instead.
     say $hash_ref->{temp_low};  # Mininum temperature
     say $hash_ref->{rain};      # Rain precipitation (mm)
 
-head1 DESCRIPTION
+=head1 DESCRIPTION
 
 L<Weather::TW::Forecast> reimplement L<Weather::TW> with new web address (from
 V6 to V7) and new parser (use L<Mojo::DOM> instead of L<HTML::TreeBulder>). The
