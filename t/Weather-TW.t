@@ -5,31 +5,11 @@
 
 # change 'tests => 1' to 'tests => last_test_to_print';
 
-use Test::More tests => 13;
+use Test::More tests => 2;
 use utf8;
 use lib 'lib';
 BEGIN { 
   use_ok('Weather::TW');
   new_ok 'Weather::TW';
 };
-
-my $w = new Weather::TW;
-can_ok $w, qw(area_zh area_en area xml);
-eval {$w->area('abcd')};
-ok $@, "expect croak when using wrong area name";
-
-ok $w->area('Taipei City'), "English name";
-$arr = $w->{data}{seven_day_forecasts}[0]{area};
-isnt scalar @{$arr}, 1, "number of Taipei areas is more than 1";
-
-ok $w->xml, "xml ok";
-ok $w->json, "json ok";
-ok $w->yaml, "yaml ok";
-ok $w->hash, "hash ok";
-ok $w->json_pretty, "json pretty ok";
-
-ok $w->area('馬祖'), "Chinese name";
-$arr = $w->{data}{seven_day_forecasts}[0]{area};
-is scalar @{$arr}, 1, "number of Matsu areas is 1";
-
 
