@@ -1,0 +1,12 @@
+language: perl
+
+perl:
+  - "5.30"
+  - "5.28"
+  - "5.26"
+
+before_install:
+  - cpanm --notest Module::Install Module::Install::ReadmeMarkdownFromPod
+
+git:
+  depth: 1
