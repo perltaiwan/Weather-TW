@@ -220,7 +220,7 @@ sub _fetch_forecast {
 #  </tr>
     my $time_range = $e->at('th')->all_text or croak "Can't get time range";
     my $temp_range = (shift @tds)->text or croak "Can't get temperature";
-    my $weather = (shift @tds)->at('img')->attrs('title') or croak "Can't get weather info";
+    my $weather = (shift @tds)->at('img')->attr('title') or croak "Can't get weather info";
     my $confortable = (shift @tds)->text or croak "Can't get confortable info";
     my $rain = (shift @tds)->text or croak "Can't get rain info";
     $rain=~s/\s+%\s*//;
@@ -256,7 +256,7 @@ sub _fetch_forecast {
   $table->find('tbody > tr > td')->each(sub{
     my $e = shift;
     my $temperature = $e->all_text or croak "Can't get temperature (weekly)";
-    my $weather = $e->at('img')->attrs('title') or croak "can't get weather (weekly)";
+    my $weather = $e->at('img')->attr('title') or croak "can't get weather (weekly)";
     $self->_add_weekly(Weather::TW::Forecast::Weekly->new(
       day => $week_day,
       temperature => $temperature,

@@ -16,6 +16,7 @@ requires 'XML::Smart' => 0;
 requires 'Carp' => 0;
 requires 'JSON' => 0;
 requires 'YAML' => 0;
+requires 'Mojolicious' => 8;
 
 test_requires 'Test::More' => 0;
 test_requires 'Test::More::UTF8' => 0;
