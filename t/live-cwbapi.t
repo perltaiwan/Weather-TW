@@ -10,7 +10,7 @@ my $cwb = Weather::TW::CWBAPI->new(
 my $res;
 
 $res = $cwb->get('/api/v1/rest/datastore/XXXXXXXXX')->res;
-ok $res->is_success;
+ok ! $res->is_success;
 
 $res = $cwb->get('/api/v1/rest/datastore/F-C0032-001')->res;
 ok $res->is_success;
