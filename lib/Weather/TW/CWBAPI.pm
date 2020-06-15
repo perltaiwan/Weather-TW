@@ -1,6 +1,6 @@
 package Weather::TW::CWBAPI {
     use Moose;
-    use Types::Standard qw(StrMatch);
+    use Weather::TW::Types;
 
     use Mojo::URL;
     use Mojo::UserAgent;
@@ -14,7 +14,7 @@ package Weather::TW::CWBAPI {
     has authorization_key => (
         is => 'ro',
         required => 1,
-        isa => StrMatch[qr/[A-Z0-9\-]{40}/],
+        isa => 'CWBAPIAuthKey',
     );
 
     sub get {
